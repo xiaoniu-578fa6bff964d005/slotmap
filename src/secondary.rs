@@ -9,6 +9,8 @@ use std::ops::{Index, IndexMut};
 #[cfg(feature = "unstable")]
 use std::collections::CollectionAllocErr;
 
+use crate::utils::{Invariant};
+
 // We could use unions to remove the memory overhead of Option here as well, but
 // until non-Copy elements inside unions stabilize it's better to give users at
 // least some place to store non-Copy elements.
@@ -87,7 +89,7 @@ impl<T> Slot<T> {
 pub struct SecondaryMap<K: Key, V> {
     slots: Vec<Slot<V>>,
     num_elems: usize,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 impl<K: Key, V> SecondaryMap<K, V> {
@@ -774,7 +776,7 @@ pub struct Drain<'a, K: Key + 'a, V: 'a> {
 pub struct IntoIter<K: Key, V> {
     num_left: usize,
     slots: Enumerate<std::vec::IntoIter<Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the key-value pairs in a `SecondaryMap`.
@@ -782,7 +784,7 @@ pub struct IntoIter<K: Key, V> {
 pub struct Iter<'a, K: Key + 'a, V: 'a> {
     num_left: usize,
     slots: Enumerate<std::slice::Iter<'a, Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// A mutable iterator over the key-value pairs in a `SecondaryMap`.
@@ -790,7 +792,7 @@ pub struct Iter<'a, K: Key + 'a, V: 'a> {
 pub struct IterMut<'a, K: Key + 'a, V: 'a> {
     num_left: usize,
     slots: Enumerate<std::slice::IterMut<'a, Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the keys in a `SecondaryMap`.

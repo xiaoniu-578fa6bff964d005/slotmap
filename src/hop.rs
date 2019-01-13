@@ -22,6 +22,7 @@ use std::{fmt, ptr};
 use std::collections::CollectionAllocErr;
 
 use crate::{DefaultKey, Key, KeyData, Slottable};
+use crate::utils::{Invariant};
 
 // Metadata to maintain the freelist.
 #[derive(Clone, Copy, Debug)]
@@ -129,7 +130,7 @@ impl<T: fmt::Debug + Slottable> fmt::Debug for Slot<T> {
 pub struct HopSlotMap<K: Key, V: Slottable> {
     slots: Vec<Slot<V>>,
     num_elems: u32,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 impl<V: Slottable> HopSlotMap<DefaultKey, V> {
@@ -883,7 +884,7 @@ pub struct IntoIter<K: Key, V: Slottable> {
     cur: usize,
     num_left: usize,
     slots: Vec<Slot<V>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the key-value pairs in a `HopSlotMap`.
@@ -892,7 +893,7 @@ pub struct Iter<'a, K: Key + 'a, V: Slottable + 'a> {
     cur: usize,
     num_left: usize,
     slots: &'a [Slot<V>],
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// A mutable iterator over the key-value pairs in a `HopSlotMap`.
@@ -901,7 +902,7 @@ pub struct IterMut<'a, K: Key + 'a, V: Slottable + 'a> {
     cur: usize,
     num_left: usize,
     slots: &'a mut [Slot<V>],
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the keys in a `HopSlotMap`.

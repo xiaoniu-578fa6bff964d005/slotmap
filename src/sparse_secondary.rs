@@ -7,6 +7,8 @@ use std::iter::{Extend, FromIterator, FusedIterator};
 use std::marker::PhantomData;
 use std::ops::{Index, IndexMut};
 
+use crate::utils::{Invariant};
+
 #[cfg(feature = "unstable")]
 use std::collections::CollectionAllocErr;
 
@@ -76,7 +78,7 @@ struct Slot<T> {
 #[derive(Debug)]
 pub struct SparseSecondaryMap<K: Key, V, S: hash::BuildHasher = hash_map::RandomState> {
     slots: HashMap<u32, Slot<V>, S>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 impl<K: Key, V> SparseSecondaryMap<K, V, hash_map::RandomState> {
@@ -681,28 +683,28 @@ impl<'a, K: Key, V: 'a + Copy> Extend<(K, &'a V)> for SparseSecondaryMap<K, V> {
 #[derive(Debug)]
 pub struct Drain<'a, K: Key + 'a, V: 'a> {
     inner: hash_map::Drain<'a, u32, Slot<V>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator that moves key-value pairs out of a `SparseSecondaryMap`.
 #[derive(Debug)]
 pub struct IntoIter<K: Key, V> {
     inner: hash_map::IntoIter<u32, Slot<V>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the key-value pairs in a `SparseSecondaryMap`.
 #[derive(Debug)]
 pub struct Iter<'a, K: Key + 'a, V: 'a> {
     inner: hash_map::Iter<'a, u32, Slot<V>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// A mutable iterator over the key-value pairs in a `SparseSecondaryMap`.
 #[derive(Debug)]
 pub struct IterMut<'a, K: Key + 'a, V: 'a> {
     inner: hash_map::IterMut<'a, u32, Slot<V>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the keys in a `SparseSecondaryMap`.

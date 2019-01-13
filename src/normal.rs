@@ -13,6 +13,7 @@ use std::{fmt, ptr};
 use std::collections::CollectionAllocErr;
 
 use crate::{DefaultKey, Key, KeyData, Slottable};
+use crate::utils::{Invariant};
 
 // Storage inside a slot or metadata for the freelist when vacant.
 union SlotUnion<T: Slottable> {
@@ -113,7 +114,7 @@ pub struct SlotMap<K: Key, V: Slottable> {
     slots: Vec<Slot<V>>,
     free_head: usize,
     num_elems: u32,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 impl<V: Slottable> SlotMap<DefaultKey, V> {
@@ -792,7 +793,7 @@ pub struct Drain<'a, K: 'a + Key, V: 'a + Slottable> {
 pub struct IntoIter<K: Key, V: Slottable> {
     num_left: usize,
     slots: Enumerate<std::vec::IntoIter<Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the key-value pairs in a `SlotMap`.
@@ -800,7 +801,7 @@ pub struct IntoIter<K: Key, V: Slottable> {
 pub struct Iter<'a, K: 'a + Key, V: 'a + Slottable> {
     num_left: usize,
     slots: Enumerate<std::slice::Iter<'a, Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// A mutable iterator over the key-value pairs in a `SlotMap`.
@@ -808,7 +809,7 @@ pub struct Iter<'a, K: 'a + Key, V: 'a + Slottable> {
 pub struct IterMut<'a, K: 'a + Key, V: 'a + Slottable> {
     num_left: usize,
     slots: Enumerate<std::slice::IterMut<'a, Slot<V>>>,
-    _k: PhantomData<fn(K) -> K>,
+    _k: Invariant<K>,
 }
 
 /// An iterator over the keys in a `SlotMap`.

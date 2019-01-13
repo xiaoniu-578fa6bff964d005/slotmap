@@ -184,6 +184,8 @@ pub use crate::secondary::SecondaryMap;
 pub mod sparse_secondary;
 pub use crate::sparse_secondary::SparseSecondaryMap;
 
+mod utils;
+
 use std::num::NonZeroU32;
 
 /// A trait for items that can go in a slot map. Due to current stable Rust
