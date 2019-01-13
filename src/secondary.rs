@@ -274,6 +274,7 @@ impl<K: Key, V> SecondaryMap<K, V> {
     /// ```
     pub fn insert(&mut self, key: K, value: V) -> Option<V> {
         let key = key.into();
+        self.slots.reserve(key.idx as usize + 1);
         for _ in self.slots.len()..=key.idx as usize {
             self.slots.push(Slot {
                 version: 0,
